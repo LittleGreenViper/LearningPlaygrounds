@@ -116,3 +116,16 @@ func theBigKahuna2(inInitialPrefix: String) {
 
 theBigKahuna2(inInitialPrefix: bigKahunaString)
 
+//: Now, let's look at referencing internal properties.
+
+func hasInternalProperties(inPropertyValue: String)->String {
+    let internalProperty = inPropertyValue
+    return internalProperty
+}
+
+//: The internal properties are obviously "captured."
+print(hasInternalProperties(inPropertyValue: "HELO"))
+let funky = hasInternalProperties(inPropertyValue: "HOWAYA")
+print(hasInternalProperties(inPropertyValue: "JSTDCKY"))
+print(funky)
+

@@ -129,29 +129,37 @@ let funky = hasInternalProperties(inPropertyValue: "HOWAYA")
 print(hasInternalProperties(inPropertyValue: "JSTDCKY"))
 print(funky)
 
-//: Now, we see how a "captured" scope variable can actually be affected, and act as a "captured golbal."
-//: The "inPrimer" parameter allows an initial value to be set by the factory user.
-func countUpSparky(_ inPrimer: Int = 0)->(Int)->Int {
+/*:
+ Now, we see how a "captured" scope variable can actually be affected, and act as a "captured golbal."
+ The "inPrimer" parameter allows an initial value to be set by the factory user.
+ This is one of the nice cool things about Swift. When you use a function as a factory, the function's scope *at the time of generation* is captured, and a new context is created.
+ Also, subsequent calls to a function reference created from the factory will affect the *captured scope*, not the current scope.
+ Iterators and sequences depend heavily on this.
+ */
+
+func makeMeASparky(_ inPrimer: Int = 0)->(Int)->Int {
     var totalCount = inPrimer
     
     return {inAddToTotal in totalCount += inAddToTotal; return totalCount}
 }
 
-let sparky = countUpSparky()
+let sparky = makeMeASparky()
 print(sparky(10))
 print(sparky(10))
 print(sparky(10))
 print(sparky(10))
 print(sparky(10))
 
-let sparky2 = countUpSparky(1_000)
+let sparky2 = makeMeASparky(1_000)
 print(sparky2(10))
 print(sparky2(10))
 print(sparky2(10))
 print(sparky2(10))
 print(sparky2(10))
-//: In the above calls, the "captured" totalCount variable in the factory function is incremented. This is used heavily in iterators.
+
+//: In the above calls, the "captured" totalCount variable in the factory function is incremented.
 //: Now, this shows that the two captured contexts are distinct:
+
 print(sparky(10))
 print(sparky2(10))
 

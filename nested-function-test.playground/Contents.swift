@@ -130,8 +130,9 @@ print(hasInternalProperties(inPropertyValue: "JSTDCKY"))
 print(funky)
 
 //: Now, we see how a "captured" scope variable can actually be affected, and act as a "captured golbal."
-func countUpSparky()->(Int)->Int {
-    var totalCount = 0
+//: The "inPrimer" parameter allows an initial value to be set by the factory user.
+func countUpSparky(_ inPrimer: Int = 0)->(Int)->Int {
+    var totalCount = inPrimer
     
     return {inAddToTotal in totalCount += inAddToTotal; return totalCount}
 }
@@ -142,4 +143,15 @@ print(sparky(10))
 print(sparky(10))
 print(sparky(10))
 print(sparky(10))
+
+let sparky2 = countUpSparky(1_000)
+print(sparky2(10))
+print(sparky2(10))
+print(sparky2(10))
+print(sparky2(10))
+print(sparky2(10))
 //: In the above calls, the "captured" totalCount variable in the factory function is incremented. This is used heavily in iterators.
+//: Now, this shows that the two captured contexts are distinct:
+print(sparky(10))
+print(sparky2(10))
+

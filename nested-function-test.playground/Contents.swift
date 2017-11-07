@@ -129,3 +129,17 @@ let funky = hasInternalProperties(inPropertyValue: "HOWAYA")
 print(hasInternalProperties(inPropertyValue: "JSTDCKY"))
 print(funky)
 
+//: Now, we see how a "captured" scope variable can actually be affected, and act as a "captured golbal."
+func countUpSparky()->(Int)->Int {
+    var totalCount = 0
+    
+    return {inAddToTotal in totalCount += inAddToTotal; return totalCount}
+}
+
+let sparky = countUpSparky()
+print(sparky(10))
+print(sparky(10))
+print(sparky(10))
+print(sparky(10))
+print(sparky(10))
+//: In the above calls, the "captured" totalCount variable in the factory function is incremented. This is used heavily in iterators.

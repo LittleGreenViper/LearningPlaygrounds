@@ -69,13 +69,15 @@ func testFunc5(_ param0: Int = 0, _ param1: Int = 1, namedParam2: Int = 2, _ par
 }
 
 print("\nTesting Set 5:")
-//: This will allow us to specify unnamed parameters AFTER the named parameter:
+//: Since everything has a default, we can use the empty tuple argument:
 testFunc5()
-testFunc5(76)
+//: The inline named parameter will allow us to specify unnamed parameters AFTER the named parameter:
+//: param0 and param1 are ignored:
 testFunc5(namedParam2:64)
 testFunc5(namedParam2:64,98)
 testFunc5(namedParam2:64,98,34)
 //: And we can specify before, but, like the first example, the values need to be linerarly specified:
+testFunc5(76)
 testFunc5(76,namedParam2:64)
 testFunc5(76,namedParam2:64,98)
 testFunc5(76,54,namedParam2:64,98)

@@ -3,7 +3,7 @@
  
  Here, we'll play with associated value enums.
  
- The scenario ian error reporting system.
+ The scenario is an error reporting system.
  
  We have multiple classes of errors, and, within those classes, specific errors.
  

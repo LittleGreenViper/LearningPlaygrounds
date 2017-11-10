@@ -1,8 +1,8 @@
-/*:
- # UNDERSTANDING DEFAULT FUNCTION PARAMETERS
- */
 import Foundation
 
+/*:
+ # DEFAULT FUNCTION PARAMETERS
+ */
 //: In this first test, we leave most of the parameters explicitly named, but give one of them a default value:
 func testFunc1(_ inFirstUnnamedParam :Int, inFirstNamedParam: Int, inNamedParamWithDefaultValue: Int = 0, inAnotherNamedParam: Int ) {
     print("inFirstUnnamedParam: \(inFirstUnnamedParam), inFirstNamedParam: \(inFirstNamedParam), inNamedParamWithDefaultValue: \(inNamedParamWithDefaultValue), inAnotherNamedParam: \(inAnotherNamedParam)")
@@ -114,4 +114,107 @@ testFunc6(98, namedParam3: 87, 51)
 //testFunc6(_, 98, namedParam3: 87, 51)
 //: This causes an error (uncomment to see the error):
 //testFunc6(nil, 98, namedParam3: 87, 51)
+
+/*:
+ # FUNCTION SIGNATURES VARIED BY RETURN TYPE
+ 
+ One of the really cool (and potentially dangerous) things about Swift, is that functions can be varied by *return type*; not just the parameter list.
+ */
+
+//: Here, we have a standard function that returns an Int:
+func returnAnInt() -> Int {
+    return 0
+}
+
+//: When we call it, we simply assign it, like so:
+let thisWillBeAnInt = returnAnInt()
+
+//: "thisWillBeAnInt" will be implicitly declared an Int.
+
+//: However, we can also have the same function, with the same argument list, return different types:
+func returnSomething(inParameter: Bool) -> Bool {
+    return inParameter
+}
+
+func returnSomething(inParameter: Bool) -> Int {
+    return inParameter ? 1 : 0
+}
+
+func returnSomething(inParameter: Bool) -> Double {
+    return inParameter ? 1.0 : 0.0
+}
+
+func returnSomething(inParameter: Bool) -> String {
+    return inParameter ? "OH, IT'S TWOO, IT'S TWOO, IT'S TWOO!" : "FALSE"
+}
+
+//: In a language like C, the above declarations would be illegal, as C uses the parameter list and function name to determine the signature.
+
+//: This does have acaveat, though. You can no longer implicitly declare. You now need to explicitly declare the type expected when calling the function.
+
+//: This will cause an error. Uncomment to see the error:
+//let response = returnSomething(inParameter: true)
+
+//: You need to specify each one:
+let intResponse: Int = returnSomething(inParameter: true)
+let boolResponse: Bool = returnSomething(inParameter: true)
+let doubleResponse: Double = returnSomething(inParameter: true)
+let stringResponse: String = returnSomething(inParameter: true)
+
+//: Here's an example of how this could be useful.
+//: I will declare a type that we'll pretend cleaves to [the Sequence Protocol](https://developer.apple.com/documentation/swift/sequence). It doesn't (because I'm lazy), but let's say that the subscript can be coerced:
+
+class FauxSequence {
+    typealias DataTuple = (string: String, int: Int, double: Double, bool: Bool)
+    private var _internalData: [DataTuple]
+    
+    init(_ inDataTuples: [DataTuple]) {
+        self._internalData = inDataTuples
+    }
+    
+    convenience init(_ inDataTuple: DataTuple) {
+        self.init([inDataTuple])
+    }
+    
+    convenience init(string: String, int: Int, double: Double, bool: Bool) {
+        self.init(DataTuple(string: string, int: int, double: double, bool: bool))
+    }
+    
+    //: Now, here's the beef. We have several types of subscripts:
+    subscript(_ zeroBasedIndex: Int) -> String {
+        let item = self._internalData[zeroBasedIndex]
+        
+        return item.string
+    }
+    
+    subscript(_ zeroBasedIndex: Int) -> Int {
+        let item = self._internalData[zeroBasedIndex]
+        
+        return item.int
+    }
+    
+    subscript(_ zeroBasedIndex: Int) -> Double {
+        let item = self._internalData[zeroBasedIndex]
+        
+        return item.double
+    }
+    
+    subscript(_ zeroBasedIndex: Int) -> Bool {
+        let item = self._internalData[zeroBasedIndex]
+        
+        return item.bool
+    }
+}
+
+let fauxData: [FauxSequence.DataTuple] = [
+    (string: "Zed", int: 0, double: 0.0, bool: false),
+    (string: "Uno", int: 1, double: 1.0, bool: true),
+    (string: "Two", int: 2, double: 2.0, bool: true),
+    (string: "Twoo", int: 2, double: 2.0, bool: true)
+]
+
+let fauxSequence = FauxSequence(fauxData)
+
+let twooString: String = fauxSequence[3]
+let zedInt: Int = fauxSequence[0]
 

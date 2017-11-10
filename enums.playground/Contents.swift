@@ -46,7 +46,7 @@ extension String {
 
 //: These are specific errors. We have made them Strings.
 
-enum CoreErrors : String {
+enum CoreErrors : String, Swift.Error {
     case header             =   "ERROR-CORE-HEADER"
     case loTemp             =   "ERROR-CORE-LO-TEMP"
     case hiTemp             =   "ERROR-CORE-HI-TEMP"
@@ -54,13 +54,13 @@ enum CoreErrors : String {
     case highWaterLevel     =   "ERROR-CORE-HI-WATER-LEVEL"
 }
 
-enum GeneratorErrors : String {
+enum GeneratorErrors : String, Swift.Error {
     case header             =   "ERROR-GEN-HEADER"
     case lowRPM             =   "ERROR-GEN-LO-RPM"
     case highRPM            =   "ERROR-GEN-HI-RPM"
 }
 
-enum HomerErrors : String {
+enum HomerErrors : String, Swift.Error {
     case header             =   "ERROR-HOMER-HEADER"
     case asleep             =   "ERROR-HOMER-ASLEEP"
     case donutMess          =   "ERROR-HOMER-DONUT-MESS"

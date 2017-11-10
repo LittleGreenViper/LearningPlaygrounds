@@ -1,6 +1,46 @@
 import Foundation
 
 /*:
+ # FUNCTION TYPES AND PARAMETER NAMES
+ */
+
+//: First, we define a function with explicitly named parameters.
+func thisIsABasicFunction(with: Int, and: Int) {
+    print("\(with), \(and)")
+}
+
+//: You call it in the approved fashion.
+thisIsABasicFunction(with: 1, and: 2)
+
+//: Now, assign it to a function reference.
+let funcPtr1 = thisIsABasicFunction
+
+//: This will not work (uncomment to see the error).
+//funcPtr1(with: 3, and: 4)
+
+//: You need to strip the parameter names when you call the reference.
+funcPtr1(3,4)
+
+//: This will not work, either (uncomment to see the error).
+//let funcPtr2:(with: Int, and: Int)->Void = thisIsABasicFunction
+
+//: Next, we return a named tuple.
+func thisIsABasicFunctionThatReturnsATuple(with: Int, and: Int)->(with: Int, and: Int) {
+    return (with: with, and: and)
+}
+
+//: Pretty straightforward. Does what it says on the tin.
+
+let tupleoGold = thisIsABasicFunctionThatReturnsATuple(with:5, and: 6)
+print("\(tupleoGold.with), \(tupleoGold.and)")
+
+//: However, named tuple data members come across.
+
+let funcPtr2 = thisIsABasicFunctionThatReturnsATuple
+let tupleoGold2 = funcPtr2(7,8)
+print("\(tupleoGold2.with), \(tupleoGold2.and)")
+
+/*:
  # DEFAULT FUNCTION PARAMETERS
  */
 //: In this first test, we leave most of the parameters explicitly named, but give one of them a default value:
@@ -114,6 +154,31 @@ testFunc6(98, namedParam3: 87, 51)
 //testFunc6(_, 98, namedParam3: 87, 51)
 //: This causes an error (uncomment to see the error):
 //testFunc6(nil, 98, namedParam3: 87, 51)
+
+/*:
+ # DEFAULT OPTIONALS:
+ 
+ Note that with optional, a value of nil does NOT trigger the default value. It is a legitimate value. You actually have to have no value supplied:
+ */
+
+func functionWithOptionalGivenADefaultValue(_ optionalParam: Int? = -7) {
+    if nil == optionalParam {
+        print("Optional Value is nil")
+    } else {
+        if -7 == optionalParam! {
+            print("Optional Value is the default")
+        } else {
+            print("Optional Value is: \(optionalParam!)")
+        }
+    }
+}
+
+//: We give an explicit positive 3 value.
+functionWithOptionalGivenADefaultValue(3)
+//: We give it no value at all, which should result in the default value of -7
+functionWithOptionalGivenADefaultValue()
+//: We give it a value of nil, which DOES NOT result in the default value.
+functionWithOptionalGivenADefaultValue(nil)
 
 /*:
  # FUNCTION SIGNATURES VARIED BY RETURN TYPE

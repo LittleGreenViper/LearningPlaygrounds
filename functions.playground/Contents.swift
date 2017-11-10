@@ -180,6 +180,84 @@ functionWithOptionalGivenADefaultValue()
 //: We give it a value of nil, which DOES NOT result in the default value.
 functionWithOptionalGivenADefaultValue(nil)
 
+func swiftFunctionWithAnOptionalAndANonOptional(param1: Int, param2: Int = 1, param3: Int) {
+    print("param1: \(param1), param2: \(param2), param3: \(param3)")
+}
+
+//: We will see that optional parameter values do not propagate to function values.
+
+let funcReference = swiftFunctionWithAnOptionalAndANonOptional
+
+swiftFunctionWithAnOptionalAndANonOptional(param1: 10, param2: 20, param3: 30)
+swiftFunctionWithAnOptionalAndANonOptional(param1: 10, param3: 30)
+
+funcReference(10, 20, 30)
+//: This is an error. Uncomment to see the error.
+//funcReference(10, 30)
+
+func swiftAnotherFunctionWithAnOptionalAndANonOptional(_ param1: Int, _ param2: Int = 1, _ param3: Int = 1) {
+    print("param1: \(param1), param2: \(param2), param3: \(param3)")
+}
+swiftAnotherFunctionWithAnOptionalAndANonOptional(10, 20, 30)
+swiftAnotherFunctionWithAnOptionalAndANonOptional(10, 20)
+swiftAnotherFunctionWithAnOptionalAndANonOptional(10)
+
+let funcReference2 = swiftAnotherFunctionWithAnOptionalAndANonOptional
+funcReference2(10, 20, 30)
+//: This is an error. Uncomment to see the error.
+//funcReference2(10, 20)
+
+//: ## FUNCTION SIGNATURE COLLISION
+//: Let's define a function where all of its parameters have defaults.
+func swiftFunctionWithPotentiallyEmptyParameterList(param1: Int = 0, param2: Int = 0, param3: Int = 0) {
+    print("param1: \(param1), param2: \(param2), param3: \(param3)")
+}
+//: This means that a valid call to this function would be swiftFunctionWithPotentiallyEmptyParameterList()
+//: Now, let's define one with an ACTUAL empty parameter list:
+func swiftFunctionWithPotentiallyEmptyParameterList() {
+    print("BORK")
+}
+//: and one with a single fixed parameter:
+func swiftFunctionWithPotentiallyEmptyParameterList(param1: Int) {
+    print("this is ONLY param1: \(param1)")
+}
+//: You are allowed to specify a function with a subset of the parameter signature:
+func swiftFunctionWithPotentiallyEmptyParameterList(param1: Int = 0, param2: Int = 0) {
+    print("This does not have param3 -param1: \(param1), param2: \(param2)")
+}
+//: Notice where it gets called below. The smaller, more specific parameter list will always trump the more general one.
+//: However, you are not allowed to define a function with the same signature, where the only difference is defaults.
+//: This causes an error. Uncomment to see the error.
+//func swiftFunctionWithPotentiallyEmptyParameterList(param1: Int, param2: Int = 0, param3: Int = 0) {
+//    print("param1: \(param1), param2: \(param2), param3: \(param3)")
+//}
+//: Swift allows you to define them, as they are different function signatures.
+//: However, try calling it with an empty parameter list:
+swiftFunctionWithPotentiallyEmptyParameterList()
+//: Only the actual empty one gets called. There's no way to call the one with all defaults, unless you specify one of its parameters:
+swiftFunctionWithPotentiallyEmptyParameterList(param1: 10)
+swiftFunctionWithPotentiallyEmptyParameterList(param1: 10, param2: 20)
+swiftFunctionWithPotentiallyEmptyParameterList(param1: 10, param2: 20, param3: 30)
+swiftFunctionWithPotentiallyEmptyParameterList(param2: 20)
+swiftFunctionWithPotentiallyEmptyParameterList(param1: 10, param2: 20)
+swiftFunctionWithPotentiallyEmptyParameterList(param2: 20, param3: 30)
+swiftFunctionWithPotentiallyEmptyParameterList(param3: 30)
+swiftFunctionWithPotentiallyEmptyParameterList(param1: 10, param3: 30)
+swiftFunctionWithPotentiallyEmptyParameterList(param2: 20, param3: 30)
+//: Now, let's define a function where the first of its parameters has no default.
+func anotherSwiftFunctionWithManyDefaultsInParameterList(param1: Int, param2: Int = 0, param3: Int = 0) {
+    print("param1: \(param1), param2: \(param2), param3: \(param3)")
+}
+//: You are allowed to define a function with a fixed single parameter with the same name as the one with a default:
+func anotherSwiftFunctionWithManyDefaultsInParameterList(param1: Int) {
+    print("only param1: \(param1)")
+}
+
+//: This will call the fixed parameter one
+anotherSwiftFunctionWithManyDefaultsInParameterList(param1: 100)
+//: This will call the one with all the defaults.
+anotherSwiftFunctionWithManyDefaultsInParameterList(param1: 100, param2: 200)
+
 /*:
  # FUNCTION SIGNATURES VARIED BY RETURN TYPE
  

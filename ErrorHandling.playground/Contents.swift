@@ -76,20 +76,12 @@ class Lexer {
     }
 }
 
-func evaluate(_ input: String) {
-    print("Evaluating: \(input)")
-    let lexer = Lexer(input: input)
-    do {
-        let tokens = try lexer.lex()
-        print("Lexer output: \(tokens)")
-    } catch Lexer.Error.invalidCharacter(let character) {
-        print("Input contained an invalid character: \(character)")
-    } catch {
-        print("An error occurred: \(error)")
-    }
-}
-
 class Parser {
+    enum Error: Swift.Error {
+        case unexpectedEndOfInput
+        case invalidToken(Token)
+    }
+    
     let tokens: [Token]
     var position = 0
     
@@ -105,8 +97,66 @@ class Parser {
         position += 1
         return token
     }
+    
+    func getNumber() throws -> Int {
+        guard let token = getNextToken() else {
+            throw Parser.Error.unexpectedEndOfInput
+        }
+        
+        switch token {
+        case .number(let value):
+            return value
+        case .plus:
+            throw Parser.Error.invalidToken(token)
+        }
+    }
+
+    func parse() throws -> Int {
+        // Require a number first
+        var value = try getNumber()
+        
+        while let token = getNextToken() {
+            switch token {
+                
+            // Getting a plus after a number is legal
+            case .plus:
+                // After a plus, we must get another number
+                let nextNumber = try getNumber()
+                value += nextNumber
+                
+            // Getting a number after a number is not legal
+            case .number:
+                throw Parser.Error.invalidToken(token)
+            }
+        }
+        
+        return value
+    }
+}
+
+func evaluate(_ input: String) {
+    print("Evaluating: \(input)")
+    let lexer = Lexer(input: input)
+    do {
+        let tokens = try lexer.lex()
+        print("Lexer output: \(tokens)")
+       
+        let parser = Parser(tokens: tokens)
+        let result = try parser.parse()
+        print("Parser output: \(result)")
+    } catch Parser.Error.unexpectedEndOfInput {
+            print("Unexpected end of input during parsing")
+    } catch Parser.Error.invalidToken(let token) {
+        print("Invalid token during parsing: \(token)")
+    } catch Lexer.Error.invalidCharacter(let character) {
+        print("Input contained an invalid character: \(character)")
+    } catch {
+        print("An error occurred: \(error)")
+    }
 }
 
 evaluate("10 + 3 + 5")
 evaluate("1 + 2 + 8")
+evaluate("10 + 3 5")
+evaluate("10 + ")
 

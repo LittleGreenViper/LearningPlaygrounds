@@ -172,14 +172,6 @@ class FauxSequence {
         self._internalData = inDataTuples
     }
     
-    convenience init(_ inDataTuple: DataTuple) {
-        self.init([inDataTuple])
-    }
-    
-    convenience init(string: String, int: Int, double: Double, bool: Bool) {
-        self.init(DataTuple(string: string, int: int, double: double, bool: bool))
-    }
-    
     //: Now, here's the beef. We have several types of subscripts:
     subscript(_ zeroBasedIndex: Int) -> String {
         let item = self._internalData[zeroBasedIndex]
@@ -208,7 +200,7 @@ class FauxSequence {
 
 let fauxData: [FauxSequence.DataTuple] = [
     (string: "Zed", int: 0, double: 0.0, bool: false),
-    (string: "Uno", int: 1, double: 1.0, bool: true),
+    (string: "Uno", int: 1, double: 1.0, bool: false),
     (string: "Two", int: 2, double: 2.0, bool: true),
     (string: "Twoo", int: 2, double: 2.0, bool: true)
 ]
@@ -217,4 +209,6 @@ let fauxSequence = FauxSequence(fauxData)
 
 let twooString: String = fauxSequence[3]
 let zedInt: Int = fauxSequence[0]
+let twoDouble: Double = fauxSequence[2]
+let wonBool: Bool = fauxSequence[1]
 

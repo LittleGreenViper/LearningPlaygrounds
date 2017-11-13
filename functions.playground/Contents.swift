@@ -2,6 +2,8 @@ import Foundation
 
 /*:
  # FUNCTION TYPES AND PARAMETER NAMES
+ 
+ [This is the Apple Page on Functions](https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/Functions.html)
  */
 
 //: First, we define a function with explicitly named parameters.
@@ -354,4 +356,57 @@ let twooString: String = fauxSequence[3]
 let zedInt: Int = fauxSequence[0]
 let twoDouble: Double = fauxSequence[2]
 let wonBool: Bool = fauxSequence[1]
+
+/*:
+ # VARIADIC PARAMETERS
+ */
+func swiftTestVariadic0(_ param0: String...) {
+    print("param0: \(param0)")
+}
+
+func swiftTestVariadic1(_ param0: Int, param1: String...) {
+    print("param0: \(param0), param1: \(param1)")
+}
+
+func swiftTestVariadic2(_ param0: Int, param1: String..., param2: Int) {
+    print("param0: \(param0), param1: \(param1), param2: \(param2)")
+}
+
+func swiftTestVariadic3(_ param0: Int, _ param1: String..., param2: Int) {
+    print("param0: \(param0), param1: \(param1), param2: \(param2)")
+}
+
+swiftTestVariadic0("One")
+swiftTestVariadic1(1, param1: "Two")
+swiftTestVariadic1(1, param1: "Two","Three","Four")
+swiftTestVariadic2(1, param1: "Two","Three","Four", param2: 5)
+swiftTestVariadic3(1, "Two","Three","Four", param2: 5)
+
+//: This is an error. Uncomment to see the error.
+//func swiftTestVariadic4(_ param0: Int, _ param1: String..., _ param2: String) {
+//    print("param0: \(param0), param1: \(param1), param2: \(param2)")
+//}
+//swiftTestVariadic4(1, "Two","Three","Four","Five")
+
+func swiftTestVariadic5(_ param0: Int, _ param1: String..., param2: String, _ param3: String = "HELO") {
+    print("param0: \(param0), param1: \(param1), param2: \(param2), param3: \(param3)")
+}
+
+swiftTestVariadic5(1, "Two","Three","Four", param2: "HI HOWAYA")
+swiftTestVariadic5(1, "Two","Three","Four", param2: "HI HOWAYA", "HOW-DEE")
+
+func swiftTestVariadic6(_ param0: Int, _ param1: String..., param2: String = "Nope", _ param3: String = "Nothin' to see here, folks") {
+    print("param0: \(param0), param1: \(param1), param2: \(param2), param3: \(param3)")
+}
+
+swiftTestVariadic6(1, "Two","Three","Four")
+swiftTestVariadic6(1, "Two","Three","Four", param2: "Yep")
+swiftTestVariadic6(1, "Two","Three","Four", param2: "Yep", "There is something to see.")
+//: This will "work," but it will give unexpected results:
+swiftTestVariadic6(1, "Two","Three","Four", "There is something to see.")
+
+//: This is an error. Uncomment to see the error.
+//func swiftTestVariadic7(_ param0: Int = 1...) {
+//    print("param0: \(param0)")
+//}
 

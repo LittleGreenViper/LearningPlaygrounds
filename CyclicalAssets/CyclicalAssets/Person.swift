@@ -26,14 +26,19 @@ class Person: CustomStringConvertible {
         }
     }
     
+    func useNetWorthChangedHandler(handler: @escaping (Double) -> Void) {
+        accountant.netWorthChangedHandler = handler
+    }
+    
     deinit {
         print("\(self) is being deallocated")
     }
     
     func takeOwnership(of asset: Asset) {
-        asset.owner = self
-        assets.append(asset)
-        accountant.gained(asset)
+        accountant.gained(asset) {
+            asset.owner = self
+            assets.append(asset)
+        }
     }
     
     func netWorthDidChange(to netWorth: Double) {

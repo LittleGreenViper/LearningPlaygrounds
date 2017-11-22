@@ -23,7 +23,7 @@ let localizedStrings:[String:String] = [
     "ERROR-CORE-HI-TEMP"        :       "The core temperature is too high.",
     "ERROR-CORE-LO-WATER-LEVEL" :       "The water level in the core is too low.",
     "ERROR-CORE-HI-WATER-LEVEL" :       "The water level in the core is too high.",
-//: Next, we have generator erros.
+//: Next, we have generator errors.
     "ERROR-GEN-HEADER"          :       "GENERATOR ERROR!",
     "ERROR-GEN-LO-RPM"          :       "The generator is running too slowly.",
     "ERROR-GEN-HI-RPM"          :       "The generator is running too quickly.",
@@ -72,7 +72,7 @@ enum ReactorErrors {
     case coreError(_:CoreErrors)
     case generatorError(_:GeneratorErrors)
     case homerError(_:HomerErrors)
-//: This is the "secret sauce." This calculated property decodes the current enum value, extracts the specific string, and also localizes it before returning it.
+    //: This is the "secret sauce." This calculated property decodes the current enum value, extracts the specific string, and also localizes it before returning it.
     var error: (header: String, details: String) {
         get {
             var containedError = "ERROR-UNKOWN"
@@ -109,3 +109,36 @@ let reactorError3 = ReactorErrors.homerError(.donutMess)
 let errorTuple = reactorError3.error
 let err3 = "ERROR: \(errorTuple.header) -\(errorTuple.details)"
 
+let reactorError4 = ReactorErrors.homerError(.asleep)
+
+// Test for generic errors (ignoring associated values):
+if case .coreError = reactorError3 {
+    print("ERROR: Generic Core Error! (if - case - ignoring associated value)")
+}
+
+if case .generatorError = reactorError3 {
+    print("ERROR: Generic Generator Error! (if - case - ignoring associated value)")
+}
+
+if case .homerError = reactorError3 {
+    print("ERROR: Generic Operator Error! (if - case - ignoring associated value)")
+}
+
+// Switch on specific associated values:
+switch reactorError3 {
+case .homerError(.asleep):
+    print("ERROR: Homer is asleep! (switch)")
+case .homerError(.donutMess):
+    print("ERROR: Homer had a donut mess! (switch)")
+default:
+    print("ERROR: some other error (\(reactorError4))! (switch)")
+}
+
+// Or catch them in if - case:
+if case .homerError(.asleep) = reactorError4 {
+    print("ERROR: Homer is asleep! (if - case)")
+}
+
+if case .homerError(.donutMess) = reactorError4 {
+    print("ERROR: Homer had a donut mess! (if - case)")
+}

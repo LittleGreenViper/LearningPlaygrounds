@@ -142,3 +142,55 @@ if case .homerError(.asleep) = reactorError4 {
 if case .homerError(.donutMess) = reactorError4 {
     print("ERROR: Homer had a donut mess! (if - case)")
 }
+
+//: Now, remember that closures are first-class citizens in Swift, so we can pass in closures.
+enum GenericErrorHandler {
+    typealias ErrorHandlerRoutine = ()->Void
+    
+    case systemError(_:ErrorHandlerRoutine)
+    case communicationError(_:ErrorHandlerRoutine)
+    case userError(_:ErrorHandlerRoutine)
+    
+    private func _handleSystemError(_ inErrorHandler:ErrorHandlerRoutine) {
+        print("THIS IS A SYSTEM ERROR!")
+        inErrorHandler()
+    }
+    
+    private func _handleCommError(_ inErrorHandler:ErrorHandlerRoutine) {
+        print("THIS IS A COMMUNICATION ERROR!")
+        inErrorHandler()
+    }
+    
+    private func _handleUserError(_ inErrorHandler:ErrorHandlerRoutine) {
+        print("THIS IS A USER ERROR!")
+        inErrorHandler()
+    }
+    
+    func handleError() {
+        switch self {
+        case .systemError(let handler):
+            self._handleSystemError(handler)
+        case .communicationError(let handler):
+            self._handleCommError(handler)
+        case .userError(let handler):
+            self._handleUserError(handler)
+        }
+    }
+}
+
+func displaySystemError() {
+    print("Pretend we're displaying an alert, with our particular error, here.")
+}
+
+var sysErr = GenericErrorHandler.systemError(displaySystemError)
+sysErr.handleError()
+
+sysErr = GenericErrorHandler.systemError({print("This is a very different closure.")})
+sysErr.handleError()
+
+let commErr = GenericErrorHandler.communicationError({print("This Could be your code.")})
+commErr.handleError()
+
+let userErr = GenericErrorHandler.userError({print("Spank User.")})
+userErr.handleError()
+

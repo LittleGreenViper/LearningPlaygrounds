@@ -21,8 +21,6 @@ let localizedStrings:[String:String] = [
     "ERROR-CORE-HEADER"         :       "CORE ERROR!",
     "ERROR-CORE-LO-TEMP"        :       "The core temperature is too low.",
     "ERROR-CORE-HI-TEMP"        :       "The core temperature is too high.",
-    "ERROR-CORE-LO-WATER-LEVEL" :       "The water level in the core is too low.",
-    "ERROR-CORE-HI-WATER-LEVEL" :       "The water level in the core is too high.",
 //: Next, we have generator errors.
     "ERROR-GEN-HEADER"          :       "GENERATOR ERROR!",
     "ERROR-GEN-LO-RPM"          :       "The generator is running too slowly.",
@@ -30,7 +28,8 @@ let localizedStrings:[String:String] = [
 //: Finally, we have operator errors.
     "ERROR-HOMER-HEADER"        :       "OPERATOR ERROR!",
     "ERROR-HOMER-ASLEEP"        :       "Homer is snoring at his post.",
-    "ERROR-HOMER-DONUT-MESS"    :       "Homer has covered the control panel in jelly",
+    "ERROR-HOMER-DONUT-MESS"    :       "Homer has covered the control panel in jelly.",
+    //: This is a general "Error X"
     "ERROR-UNKOWN"              :       "UNKOWN ERROR"
                         ]
 
@@ -50,8 +49,6 @@ enum CoreErrors : String, Swift.Error {
     case header             =   "ERROR-CORE-HEADER"
     case loTemp             =   "ERROR-CORE-LO-TEMP"
     case hiTemp             =   "ERROR-CORE-HI-TEMP"
-    case lowWaterLevel      =   "ERROR-CORE-LO-WATER-LEVEL"
-    case highWaterLevel     =   "ERROR-CORE-HI-WATER-LEVEL"
 }
 
 enum GeneratorErrors : String, Swift.Error {

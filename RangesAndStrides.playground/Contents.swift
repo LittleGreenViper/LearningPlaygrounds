@@ -46,7 +46,7 @@ case openIntRange:
 case closedIntRange:
     print("We has a match (closed)! \(someNumber)")
 default:
-    print("No Match! \(someString)")
+    print("No Match! \(someNumber)")
 }
 switch someNumber {
 case closedIntRange:
@@ -55,7 +55,7 @@ case closedIntRange:
 case openIntRange:
     print("We has a match (open)! \(someNumber)")
 default:
-    print("No Match! \(someString)")
+    print("No Match! \(someNumber)")
 }
 let someOtherNumber = 10
 switch someOtherNumber {
@@ -66,7 +66,7 @@ case closedIntRange:
     //: It is in here.
     print("We has a match (closed)! \(someOtherNumber)")
 default:
-    print("No Match! \(someString)")
+    print("No Match! \(someNumber)")
 }
 //: OK. Let's get weird.
 var someString = "antelope"

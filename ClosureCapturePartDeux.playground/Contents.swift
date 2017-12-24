@@ -107,3 +107,20 @@ contextCheck = "Execution"
 // This is the execution phase. We run the closure here.
 print("The state was captured during the " + myClosure() + " phase.")
 
+contextCheck = "Declaration"
+
+// This is the declaration phase of the closure. It is declared, but not instantiated.
+func generateAClosureForMe2() -> () -> String {
+    return {return contextCheck}
+}
+
+contextCheck = "Instantiation"
+
+// This is the instantiation phase. We ask the factory function to give us an instance of the closure.
+let myClosure2 = generateAClosureForMe2()
+
+contextCheck = "Execution"
+
+// This is the execution phase. We run the closure here.
+print("The state was captured during the " + myClosure2() + " phase.")
+

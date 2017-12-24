@@ -3,80 +3,80 @@ import Foundation
 // Now, as of Swift 2, you can add "default vars and funcs" to protocol extensions:
 protocol EmojiString {
     var poopEmoji: String { get }
+    var waterEmoji: String { get }
+    var smileyEmoji: String { get }
 }
 
 extension EmojiString {
     var poopEmoji: String { return "\u{1F4A9}" }
-}
-
-class WTFEmoji: EmojiString {
-    
-}
-
-let someEmoji = WTFEmoji()
-let poop = someEmoji.poopEmoji
-
-// Hey! That's pretty cool! But...can't you implement multiple protocols?
-// Yup:
-protocol SomeOtherEmoji {
-    var fireEmoji: String { get }
-}
-
-extension SomeOtherEmoji {
-    var fireEmoji: String { return "\u{1F525}" }
-}
-
-class WTFEmoji2: EmojiString, SomeOtherEmoji {
-    
-}
-
-let fireAndPoo = WTFEmoji2()
-
-// Notice that neither of the classes above actually implemented any of the protocol methods. They simply used the defaults.
-let fire = fireAndPoo.fireEmoji
-let poop2 = fireAndPoo.poopEmoji
-
-// Hey! That looks just like the evil multiple inheritance!
-// Yup.
-protocol FlamingPoo: EmojiString, SomeOtherEmoji {
-    var makeMyDay: String { get }
-}
-
-extension FlamingPoo {
-    var makeMyDay: String { return self.fireEmoji + self.poopEmoji + self.fireEmoji }
-}
-
-class NotAGoodDay: FlamingPoo {
-    
-}
-
-let wtf = NotAGoodDay()
-
-let thisCantEndWell = wtf.makeMyDay
-
-// Can we get "the Diamond of Death" with protocols?
-// Let's see:
-protocol YetAnotherEmoji {
-    var waterEmoji: String { get }
-}
-
-extension YetAnotherEmoji {
     var waterEmoji: String { return "\u{1F30A}" }
+    var smileyEmoji: String { return "\u{1F600}" }
 }
 
-protocol SoggyPoo: YetAnotherEmoji, EmojiString {
-    var makeMyDay: String { get }
+class StandardEmojiClass: EmojiString {}
+
+let someEmoji = StandardEmojiClass()
+let poop = someEmoji.poopEmoji
+let water = someEmoji.waterEmoji
+let smiley = someEmoji.smileyEmoji
+
+print("\(poop), \(water), \(smiley)")
+
+// Let's specify another protocol, with a new emoji:
+protocol EmojiString2 {
+    var frownyEmoji: String { get }
 }
 
-extension SoggyPoo {
-    var makeMyDay: String { return self.waterEmoji + self.poopEmoji + self.waterEmoji }
+extension EmojiString2 {
+    var frownyEmoji: String { return "\u{2639}" }
 }
 
-//class DiamondsOfPoo: FlamingPoo, SoggyPoo {
-//
+class FrownyEmojiClass: EmojiString2 {}
+let someEmoji2 = FrownyEmojiClass()
+let frown = someEmoji2.frownyEmoji
+
+print(frown)
+
+// Now, we follow multiple protocols:
+class HybridEmoji: EmojiString, EmojiString2 {}
+let someEmoji3 = HybridEmoji()
+let poop2 = someEmoji3.poopEmoji
+let water2 = someEmoji3.waterEmoji
+let smiley2 = someEmoji3.smileyEmoji
+let frown2 = someEmoji3.frownyEmoji
+
+print("\(poop2), \(water2), \(smiley2), \(frown2)")
+
+extension HybridEmoji {
+    var waterEmoji: String { return "\u{1F6BE}" }
+}
+
+// This won't work:
+//extension EmojiString {
+//    var smileyEmoji: String { return "\u{1F60E}" }
 //}
-//
-//let diamondsAreAGirlsBestFriend = DiamondsOfPoo()
-//
-//let thisCantEndWell2 = diamondsAreAGirlsBestFriend.makeMyDay
+
+// Let's see if we can create a "diamond of death":
+
+protocol EmojiString3: EmojiString {
+    var frownyEmoji: String { get }
+}
+
+extension EmojiString3 {
+    var frownyEmoji: String { return "\u{1F92F}" }
+}
+
+class Emoji2: EmojiString3 {}
+let someEmoji4 = Emoji2()
+let poop3 = someEmoji4.poopEmoji
+let water3 = someEmoji4.waterEmoji
+let smiley3 = someEmoji4.smileyEmoji
+let frown3 = someEmoji4.frownyEmoji
+
+print("\(poop3), \(water3), \(smiley3), \(frown3)")
+
+// This is a bug. It won't work.
+//class DiamondsAreABugsBestFriend: EmojiString2, EmojiString3 {}
+// This is also a bug.
+//class Emoji3: Emoji2, EmojiString2 {}
 

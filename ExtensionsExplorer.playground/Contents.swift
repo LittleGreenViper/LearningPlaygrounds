@@ -62,6 +62,17 @@ extension Double {
 
 let result = 2.multiplyMeBy(7)
 
+// This returns the value's "Golden Ratio," either higher or lower.
+extension Double {
+    static var goldenRatio: Double { return (1 + 5.0.squareRoot()) / 2 }
+    var goldenRatioValues: (below: Double, above: Double) { return (self / type(of: self).goldenRatio, self * type(of: self).goldenRatio) }
+}
+
+let itsGolden = Double.goldenRatio
+let mySize: Double = 1.234567
+let sizeOfSmallerElement = mySize.goldenRatioValues.below
+let sizeOfLargerElement = mySize.goldenRatioValues.above
+
 let degrees90 = 90.0
 let degreesToRadians90 = degrees90.radians
 let degreesToRadians180 = 180.0.radians

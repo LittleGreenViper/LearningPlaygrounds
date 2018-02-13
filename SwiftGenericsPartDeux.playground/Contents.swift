@@ -44,11 +44,34 @@ class GenClassA: GenericBaseProtocol {
 // These allow classes based on this protocol to act as Equatable and Comparable, if the data type is Comparable,
 // or just Equatable, if the data type is Equatable, but not Comparable.
 
+// This extension is for when the class is not Equatable.
+// The == always returns false, and we have an isEquatable Bool that tells us the class is not Equatable.
+// Thanks to Alain T. for his guidance: https://stackoverflow.com/a/48711730/879365
+extension GenericBaseProtocol {
+    static func ==(lhs: Self, rhs: Self) -> Bool {
+        return false
+    }
+    
+    static func <(lhs: Self, rhs: Self) -> Bool {
+        return false
+    }
+    
+    static func >(lhs: Self, rhs: Self) -> Bool {
+        return false
+    }
+
+    var isEquatable:Bool { return false }
+    var isComparable:Bool { return false }
+}
+
 // This extension uses the Equatable protocol (Comparable extends Equatable). Note the capitalized "Self".
+// If the class is Equatable, then we return a true for isEquatable.
 extension GenericBaseProtocol where T: Equatable {
     static func ==(lhs: Self, rhs: Self) -> Bool {
         return lhs.myProperty == rhs.myProperty
     }
+    
+    var isEquatable:Bool { return true }
 }
 
 // This extension uses the Comparable protocol.
@@ -59,6 +82,8 @@ extension GenericBaseProtocol where T: Comparable {
     static func >(lhs: Self, rhs: Self) -> Bool {
         return lhs.myProperty > rhs.myProperty
     }
+    
+    var isComparable:Bool { return true }
 }
 
 // Here, we define a Comparable type
@@ -74,6 +99,12 @@ class GenClassB3: GenericBaseProtocol {
 // Test the Comparable behavior
 let lhs2 = GenClassB3(3)
 let rhs2 = GenClassB3(4)
+
+print ( "lhs2 is" + (lhs2.isEquatable ? "" : " not") + " Equatable." )
+print ( "lhs2 is" + (lhs2.isComparable ? "" : " not") + " Comparable." )
+
+print ( "rhs2 is" + (rhs2.isEquatable ? "" : " not") + " Equatable." )
+print ( "rhs2 is" + (rhs2.isComparable ? "" : " not") + " Comparable." )
 
 let leftEqualToRight2 = lhs2 == rhs2
 let leftGreaterThanRight2 = lhs2 > rhs2
@@ -99,17 +130,53 @@ class GenClassB3A: GenericBaseProtocol {
 let lhs2A = GenClassB3A(["HI"])
 let rhs2A = GenClassB3A(["Howaya"])
 
-// None of this will work, because the static functions aren't available.
-//let leftEqualToRight2A = lhs2A == rhs2A
-//let leftGreaterThanRight2A = lhs2A > rhs2A
-//let leftLessThanRight2A = lhs2A < rhs2A
-//
-//let rightEqualToLeft2A = rhs2A == lhs2A
-//let rightGreaterThanLeft2A = rhs2A > lhs2A
-//let rightLessThanLeft2A = rhs2A < lhs2A
-//
-//let leftEqualToLeft2A = lhs2A == GenClassB3A(["HI":"Howaya"])
-//let rightEqualToRight2A = lhs2A == GenClassB3A(["HI":"Howaya"])
+print ( "lhs2A is" + (lhs2A.isEquatable ? "" : " not") + " Equatable." )
+print ( "lhs2A is" + (lhs2A.isComparable ? "" : " not") + " Comparable." )
+
+print ( "rhs2A is" + (rhs2A.isEquatable ? "" : " not") + " Equatable." )
+print ( "rhs2A is" + (rhs2A.isComparable ? "" : " not") + " Comparable." )
+
+// Because of the game we played up there, these will compile, but the comparisons will always fail.
+let leftEqualToRight2A = lhs2A == rhs2A
+let leftGreaterThanRight2A = lhs2A > rhs2A
+let leftLessThanRight2A = lhs2A < rhs2A
+
+let rightEqualToLeft2A = rhs2A == lhs2A
+let rightGreaterThanLeft2A = rhs2A > lhs2A
+let rightLessThanLeft2A = rhs2A < lhs2A
+
+let leftEqualToLeft2A = lhs2A == GenClassB3A(["HI"])
+let rightEqualToRight2A = lhs2A == GenClassB3A(["Howaya"])
+
+// Here, we define an Equatable (but not Comparable) type
+class GenClassB4: GenericBaseProtocol {
+    typealias T = Bool
+    var myProperty: T = false
+    
+    required init(_ myProperty: T ) {
+        self.myProperty = myProperty
+    }
+}
+
+let lhs2B = GenClassB4(true)
+let rhs2B = GenClassB4(true)
+
+print ( "lhs2B is" + (lhs2B.isEquatable ? "" : " not") + " Equatable." )
+print ( "lhs2B is" + (lhs2B.isComparable ? "" : " not") + " Comparable." )
+
+print ( "rhs2B is" + (rhs2B.isEquatable ? "" : " not") + " Equatable." )
+print ( "rhs2B is" + (rhs2B.isComparable ? "" : " not") + " Comparable." )
+
+let leftEqualToRight2B = lhs2B == rhs2B
+let leftGreaterThanRight2B = lhs2B > rhs2B
+let leftLessThanRight2B = lhs2B < rhs2B
+
+let rightEqualToLeft2B = rhs2B == lhs2B
+let rightGreaterThanLeft2B = rhs2B > lhs2B
+let rightLessThanLeft2B = rhs2B < lhs2B
+
+let leftEqualToLeft2B = lhs2B == GenClassB4(true)
+let rightEqualToRight2B = lhs2B == GenClassB4(false)
 
 // This defines a new protocol, based on Comparable.
 protocol GenericBaseProtocolBothCompType: Comparable {

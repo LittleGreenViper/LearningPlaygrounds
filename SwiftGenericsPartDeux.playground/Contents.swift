@@ -44,9 +44,10 @@ class GenClassA: GenericBaseProtocol {
 // These allow classes based on this protocol to act as Equatable and Comparable, if the data type is Comparable,
 // or just Equatable, if the data type is Equatable, but not Comparable.
 
-// This extension is for when the class is not Equatable.
+// This extension is for when the class is not Equatable (or Comparable).
 // The == always returns false, and we have an isEquatable Bool that tells us the class is not Equatable.
 // Thanks to Alain T. for his guidance: https://stackoverflow.com/a/48711730/879365
+// This is the default extension, implementing non-functional stubs.
 extension GenericBaseProtocol {
     static func ==(lhs: Self, rhs: Self) -> Bool {
         return false
@@ -59,13 +60,14 @@ extension GenericBaseProtocol {
     static func >(lhs: Self, rhs: Self) -> Bool {
         return false
     }
-
+    
     var isEquatable:Bool { return false }
     var isComparable:Bool { return false }
 }
 
 // This extension uses the Equatable protocol (Comparable extends Equatable). Note the capitalized "Self".
 // If the class is Equatable, then we return a true for isEquatable.
+// This extension is used when the associated type conforms to the Equatable protocol.
 extension GenericBaseProtocol where T: Equatable {
     static func ==(lhs: Self, rhs: Self) -> Bool {
         return lhs.myProperty == rhs.myProperty
@@ -74,7 +76,7 @@ extension GenericBaseProtocol where T: Equatable {
     var isEquatable:Bool { return true }
 }
 
-// This extension uses the Comparable protocol.
+// This extension is used when the associated type conforms to the Comparable protocol.
 extension GenericBaseProtocol where T: Comparable {
     static func <(lhs: Self, rhs: Self) -> Bool {
         return lhs.myProperty < rhs.myProperty

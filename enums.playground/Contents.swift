@@ -14,26 +14,26 @@
 
 import Foundation
 
-//: First, we'll set up a Dictionary of localized strings. The key will be the localized string placeholder. This mimics the standard iOS localization pattern.
+// First, we'll set up a Dictionary of localized strings. The key will be the localized string placeholder. This mimics the standard iOS localization pattern.
 
 let localizedStrings:[String:String] = [
-//: First, we have reactor core errors.
+// First, we have reactor core errors.
     "ERROR-CORE-HEADER"         :       "CORE ERROR!",
     "ERROR-CORE-LO-TEMP"        :       "The core temperature is too low.",
     "ERROR-CORE-HI-TEMP"        :       "The core temperature is too high.",
-//: Next, we have generator errors.
+// Next, we have generator errors.
     "ERROR-GEN-HEADER"          :       "GENERATOR ERROR!",
     "ERROR-GEN-LO-RPM"          :       "The generator is running too slowly.",
     "ERROR-GEN-HI-RPM"          :       "The generator is running too quickly.",
-//: Finally, we have operator errors.
+// Finally, we have operator errors.
     "ERROR-HOMER-HEADER"        :       "OPERATOR ERROR!",
     "ERROR-HOMER-ASLEEP"        :       "Homer is snoring at his post.",
     "ERROR-HOMER-DONUT-MESS"    :       "Homer has covered the control panel in jelly.",
-    //: This is a general "Error X"
+    // This is a general "Error X"
     "ERROR-UNKOWN"              :       "UNKOWN ERROR"
                         ]
 
-//: This is a trick to make the NSLocalizedString call easier to deal with. In this case, we'll be indexing the dictionary instead.
+// This is a trick to make the NSLocalizedString call easier to deal with. In this case, we'll be indexing the dictionary instead.
 
 extension String {
     var localized: String {
@@ -41,9 +41,9 @@ extension String {
     }
 }
 
-//: Now, we set up our error enums.
+// Now, we set up our error enums.
 
-//: These are specific errors. We have made them Strings.
+// These are specific errors. We have made them Strings.
 
 enum CoreErrors : String, Swift.Error {
     case header             =   "ERROR-CORE-HEADER"
@@ -63,13 +63,13 @@ enum HomerErrors : String, Swift.Error {
     case donutMess          =   "ERROR-HOMER-DONUT-MESS"
 }
 
-//: These are the general categories, and are expressed as Ints.
+// These are the general categories, and are expressed as Ints.
 
 enum ReactorErrors {
     case coreError(_:CoreErrors)
     case generatorError(_:GeneratorErrors)
     case homerError(_:HomerErrors)
-    //: This is the "secret sauce." This calculated property decodes the current enum value, extracts the specific string, and also localizes it before returning it.
+    // This is the "secret sauce." This calculated property decodes the current enum value, extracts the specific string, and also localizes it before returning it.
     var error: (header: String, details: String) {
         get {
             var containedError = "ERROR-UNKOWN"
@@ -91,11 +91,11 @@ enum ReactorErrors {
     }
 }
 
-//: Now, let's put these to the test.
+// Now, let's put these to the test.
 
-//: We simply set a variable to the specific type of error
+// We simply set a variable to the specific type of error
 let reactorError1 = ReactorErrors.coreError(.loTemp)
-//: Then we display the decoded error.
+// Then we display the decoded error.
 let err1 = "ERROR: \(reactorError1.error.header) -\(reactorError1.error.details)"
 
 let reactorError2 = ReactorErrors.generatorError(.highRPM)
@@ -140,7 +140,7 @@ if case .homerError(.donutMess) = reactorError4 {
     print("ERROR: Homer had a donut mess! (if - case)")
 }
 
-//: Now, remember that closures are first-class citizens in Swift, so we can pass in closures.
+// Now, remember that closures are first-class citizens in Swift, so we can pass in closures.
 enum GenericErrorHandler {
     typealias ErrorHandlerRoutine = ()->Void
     

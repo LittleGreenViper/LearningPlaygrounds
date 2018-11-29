@@ -1,13 +1,13 @@
+import PlaygroundSupport
 import UIKit
 import MapKit
-import PlaygroundSupport
 
 // This can be messy. It will work, but...ick:
 extension Array {
-// ERROR: This will not work
-//    var description: String {
-//        return self.joined(separator: ",")
-//    }
+    // ERROR: This will not work
+    //    var description: String {
+    //        return self.joined(separator: ",")
+    //    }
     var description1: String {
         if let selfie = self as? [String] {
             return selfie.joined(separator: ",")
@@ -15,15 +15,15 @@ extension Array {
         
         return "UN-STRING"
     }
-
+    
     var description: String {
         if let selfie = self as? [String] {
             return selfie.joined(separator: ",")
         } else if let selfie = self as? [[String]] {
-            return selfie.reduce(into: Array<String>()) { (accumulator: inout [String], element) in
+            return selfie.reduce(into: [String]()) { (accumulator: inout [String], element) in
                 let line = element.description
                 accumulator.append(line)
-            }.joined(separator: "\n")
+                }.joined(separator: "\n")
         }
         
         return "HUH?"
@@ -50,10 +50,10 @@ extension Array where Element == String {
 
 extension Array where Element == [String] {
     var csv: String {
-        return self.reduce(into: Array<String>()) { (accumulator: inout [String], element) in
+        return self.reduce(into: [String]()) { (accumulator: inout [String], element) in
             let element2 = element.csvLine
             accumulator.append(element2)
-        }.joined(separator: "\n")
+            }.joined(separator: "\n")
     }
 }
 
@@ -65,24 +65,19 @@ extension Array where Element == CLLocationCoordinate2D {
     /* ################################################################## */
     /**
      - returns: An MKMapRect, containing all the points in the Array.
-                Nil, if the Array has less than 2 points, or does not contain coordinates.
+     Nil, if the Array has less than 2 points, or does not contain coordinates.
      */
     var rect: MKMapRect! {
         if 1 < self.count {
-            var maxLong: Double = -180
-            var maxLat: Double = -180
-            var minLong: Double = 180
-            var minLat: Double = 180
-            
-            for coord in self {
-                maxLong = Swift.max(coord.longitude, maxLong)
-                maxLat = Swift.max(coord.latitude, maxLat)
-                minLong = Swift.min(coord.longitude, minLong)
-                minLat = Swift.min(coord.latitude, minLat)
+            let result = self.reduce(into: (maxLong: -180, maxLat: -180, minLong: 180, minLat: 180)) { (result: inout (maxLong: Double, maxLat: Double, minLong: Double, minLat: Double), inLocationCoords) in
+                result.maxLong = Swift.max(inLocationCoords.longitude, result.maxLong)
+                result.maxLat = Swift.max(inLocationCoords.latitude, result.maxLat)
+                result.minLong = Swift.min(inLocationCoords.longitude, result.minLong)
+                result.minLat = Swift.min(inLocationCoords.latitude, result.minLat)
             }
             
-            let topLeft = MKMapPoint(CLLocationCoordinate2D(latitude: maxLat, longitude: minLong))
-            let bottomRight = MKMapPoint(CLLocationCoordinate2D(latitude: minLat, longitude: maxLong))
+            let topLeft = MKMapPoint(CLLocationCoordinate2D(latitude: result.maxLat, longitude: result.minLong))
+            let bottomRight = MKMapPoint(CLLocationCoordinate2D(latitude: result.minLat, longitude: result.maxLong))
             let size = MKMapSize(width: abs(bottomRight.x - topLeft.x), height: abs(bottomRight.y - topLeft.y))
             return MKMapRect(origin: topLeft, size: size)
         }
@@ -93,50 +88,33 @@ extension Array where Element == CLLocationCoordinate2D {
     /* ################################################################## */
     /**
      - returns: The center coordinate of the group of coordinates.
-                Nil, if the center cannot be computed for any reason.
      */
     var center: CLLocationCoordinate2D! {
-        if 1 < self.count {
-            var maxLong: Double = -180
-            var maxLat: Double = -180
-            var minLong: Double = 180
-            var minLat: Double = 180
-            
-            for coord in self {
-                maxLong = Swift.max(coord.longitude, maxLong)
-                maxLat = Swift.max(coord.latitude, maxLat)
-                minLong = Swift.min(coord.longitude, minLong)
-                minLat = Swift.min(coord.latitude, minLat)
-            }
-            
-            return CLLocationCoordinate2D(latitude: (maxLat + minLat) / 2, longitude: (maxLong + minLong) / 2)
-        } else if 1 == self.count {
-            return self[0]
+        let result = self.reduce(into: (maxLong: -180, maxLat: -180, minLong: 180, minLat: 180)) { (result: inout (maxLong: Double, maxLat: Double, minLong: Double, minLat: Double), inLocationCoords) in
+            result.maxLong = Swift.max(inLocationCoords.longitude, result.maxLong)
+            result.maxLat = Swift.max(inLocationCoords.latitude, result.maxLat)
+            result.minLong = Swift.min(inLocationCoords.longitude, result.minLong)
+            result.minLat = Swift.min(inLocationCoords.latitude, result.minLat)
         }
         
-        return nil
+        return CLLocationCoordinate2D(latitude: (result.maxLat + result.minLat) / 2, longitude: (result.maxLong + result.minLong) / 2)
     }
     
     /* ################################################################## */
     /**
      - returns: A coordinate span, encompassing all of the coordinates in the Array.
-                Nil, if the span cannot be calculated for any reason.
+     Nil, if the span cannot be calculated for any reason.
      */
     var span: MKCoordinateSpan! {
         if 1 < self.count {
-            var maxLong: Double = -180
-            var maxLat: Double = -180
-            var minLong: Double = 180
-            var minLat: Double = 180
-            
-            for coord in self {
-                maxLong = Swift.max(coord.longitude, maxLong)
-                maxLat = Swift.max(coord.latitude, maxLat)
-                minLong = Swift.min(coord.longitude, minLong)
-                minLat = Swift.min(coord.latitude, minLat)
+            let result = self.reduce(into: (maxLong: -180, maxLat: -180, minLong: 180, minLat: 180)) { (result: inout (maxLong: Double, maxLat: Double, minLong: Double, minLat: Double), inLocationCoords) in
+                result.maxLong = Swift.max(inLocationCoords.longitude, result.maxLong)
+                result.maxLat = Swift.max(inLocationCoords.latitude, result.maxLat)
+                result.minLong = Swift.min(inLocationCoords.longitude, result.minLong)
+                result.minLat = Swift.min(inLocationCoords.latitude, result.minLat)
             }
             
-            return MKCoordinateSpan(latitudeDelta: abs(maxLat - minLat), longitudeDelta: abs(maxLong - minLong))
+            return MKCoordinateSpan(latitudeDelta: result.maxLat - result.minLat, longitudeDelta: result.maxLong - result.minLong)
         }
         
         return nil
@@ -145,7 +123,7 @@ extension Array where Element == CLLocationCoordinate2D {
     /* ################################################################## */
     /**
      - returns: A region, encompassing all of the elements in the Array.
-                Nil, if the region cannot be calculated for any reason.
+     Nil, if the region cannot be calculated for any reason.
      */
     var region: MKCoordinateRegion! {
         if let center = self.center, let span = self.span {
@@ -153,6 +131,13 @@ extension Array where Element == CLLocationCoordinate2D {
         }
         
         return nil
+    }
+    
+}
+
+extension CLLocationCoordinate2D {
+    init(_ inLocationArray: [CLLocationCoordinate2D]) {
+        self.init(latitude: inLocationArray.center.latitude, longitude: inLocationArray.center.longitude)
     }
 }
 
@@ -182,10 +167,10 @@ let arrayOfCoordinates = [washingtonMonument,
 ]
 
 let rectThatWillEncloseAllLocations = arrayOfCoordinates.rect   // Remember that this is in map points (not coordinates), so the numbers will be big:
-                                                                // left: 76471147.05123556
-                                                                // top: 102675876.5094804
-                                                                // width: 324434.0747377872
-                                                                // height: 57184.79726368189
+// left: 76471147.05123556
+// top: 102675876.5094804
+// width: 324434.0747377872
+// height: 57184.79726368189
 
 let greatLocationForAHotel = arrayOfCoordinates.center          // This will contain (38.88105, -77.22665000000001), which is a mean of all the data points in the Array.
 
@@ -193,22 +178,34 @@ let aSpanThatIsBigEnoughForEverything = arrayOfCoordinates.span // This contains
 
 let aRegionThatFitsEverything = arrayOfCoordinates.region       // This is a region, made up of the center and span. It will enclose all the points.
 
+let anotherGreatLocationForAHotel = CLLocationCoordinate2D(arrayOfCoordinates)  // In this trick, we simply assign the center (38.88105, -77.22665000000001) to the property.
+
 // This should display the map, centered, with markers for each location.
 class MapViewController: UIViewController {
-    let mapView = MKMapView()
+    var mapView: MKMapView!
     override func viewDidLoad() {
-        self.mapView.frame = self.view.bounds
-        self.mapView.mapType = .hybrid
+        super.viewDidLoad()
+        self.mapView = MKMapView()
         self.view.addSubview(self.mapView)
-        mapView.setRegion(mapView.regionThatFits(arrayOfCoordinates.region), animated: false)
-        for coordinate in arrayOfCoordinates {
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        self.mapView.frame = self.view.bounds
+        self.mapView.mapType = .standard
+        self.mapView.removeAnnotations(self.mapView.annotations)
+        
+        arrayOfCoordinates.forEach { [unowned self] coordinate in
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
-            mapView.addAnnotation(annotation)
+            self.mapView.addAnnotation(annotation)
         }
-        super.viewDidLoad()
+        
+        self.mapView.setRegion(self.mapView.regionThatFits(arrayOfCoordinates.region), animated: true)
     }
 }
-PlaygroundPage.current.liveView = MapViewController()
-PlaygroundPage.current.needsIndefiniteExecution = true
 
+let controller = MapViewController()
+
+PlaygroundPage.current.liveView = controller
+PlaygroundPage.current.needsIndefiniteExecution = true

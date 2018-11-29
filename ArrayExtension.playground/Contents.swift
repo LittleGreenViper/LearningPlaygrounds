@@ -4,10 +4,10 @@ import MapKit
 
 // This can be messy. It will work, but...ick:
 extension Array {
-    // ERROR: This will not work
-    //    var description: String {
-    //        return self.joined(separator: ",")
-    //    }
+// ERROR: This will not work
+//    var description: String {
+//        return self.joined(separator: ",")
+//    }
     var description1: String {
         if let selfie = self as? [String] {
             return selfie.joined(separator: ",")

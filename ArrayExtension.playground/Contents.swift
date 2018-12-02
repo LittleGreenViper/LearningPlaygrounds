@@ -4,10 +4,10 @@ import MapKit
 
 // This can be messy. It will work, but...ick:
 extension Array {
-// ERROR: This will not work
-//    var description: String {
-//        return self.joined(separator: ",")
-//    }
+    // ERROR: This will not work
+    //    var description: String {
+    //        return self.joined(separator: ",")
+    //    }
     var description1: String {
         if let selfie = self as? [String] {
             return selfie.joined(separator: ",")
@@ -60,6 +60,22 @@ extension Array where Element == [String] {
 let csv3 = testArray0.csv               // Contains "One,Two,Three\nFour,Five,Six\nSeven,eight,Nine"
 let csv4 = testArray0[0].csvLine        // Contains "One,Two,Three"
 let csv5 = testArray1.csvLine           // Contains "One,Two,Three"
+
+extension Array where Element: Equatable {
+    mutating func removeObject(object: Element) {
+        if let index = self.firstIndex(of: object) {
+            self.remove(at: index)
+        }
+    }
+}
+
+var testArray = [1,2,3,4,5,6,7,8,9,0]
+testArray.removeObject(object: 6)
+let newArray = testArray
+
+var testArray2 = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
+testArray2.removeObject(object: "6")
+let newArray2 = testArray2
 
 extension Array where Element == CLLocationCoordinate2D {
     /* ################################################################## */

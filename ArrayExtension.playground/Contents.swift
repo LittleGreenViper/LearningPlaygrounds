@@ -8,28 +8,31 @@ extension Array {
     //    var description: String {
     //        return self.joined(separator: ",")
     //    }
+    // Simple CSV line.
     var description1: String {
-        if let selfie = self as? [String] {
-            return selfie.joined(separator: ",")
+        if let selfie = self as? [String] { // Filter for a certain type of element.
+            return selfie.joined(separator: ",")    // Now, since it's a String, we can join the party.
         }
         
-        return "UN-STRING"
+        return "UN-STRING"  // This is not a joiner.
     }
     
+    // Creates a CSV string from multiple contained Arrays.
     var description: String {
-        if let selfie = self as? [String] {
+        if let selfie = self as? [String] { // Simple CSV.
             return selfie.joined(separator: ",")
-        } else if let selfie = self as? [[String]] {
-            return selfie.reduce(into: [String]()) { (accumulator: inout [String], element) in
-                let line = element.description
+        } else if let selfie = self as? [[String]] {    // An Array of Arrays of String can be CSVed.
+            return selfie.reduce(into: [String]()) { (accumulator: inout [String], element) in  // Pile each line on top of the other.
+                let line = element.description  // This asks each line to render as CSV.
                 accumulator.append(line)
-                }.joined(separator: "\n")
+                }.joined(separator: "\n")   // Join the lines by linefeeds.
         }
         
-        return "HUH?"
+        return "HUH?"   // Can't CSV.
     }
 }
 
+// These are test datasets for the CSV functionality.
 let testArray0 = [["One", "Two", "Three"],["Four", "Five", "Six"],["Seven","eight","Nine"]]
 let testArray1 = ["One", "Two", "Three"]
 
@@ -42,8 +45,9 @@ let csv0 = testArray0.description           // Contains "One,Two,Three\nFour,Fiv
 let csv1 = testArray0[0].description        // Contains "One,Two,Three"
 let csv2 = testArray1.description           // Contains "One,Two,Three"
 
+// Now, with type-constrained extensions, we can get the same functionality with drastically less code.
 extension Array where Element == String {
-    var csvLine: String {
+    var csvLine: String {   // Since this is type-constrained, we don't need to take a selfie.
         return self.joined(separator: ",")
     }
 }
@@ -61,21 +65,31 @@ let csv3 = testArray0.csv               // Contains "One,Two,Three\nFour,Five,Si
 let csv4 = testArray0[0].csvLine        // Contains "One,Two,Three"
 let csv5 = testArray1.csvLine           // Contains "One,Two,Three"
 
+// This demonstrates the capability using a protocol. We extend Array for elements of the Equatable protocol.
 extension Array where Element: Equatable {
-    mutating func removeObject(object: Element) {
+    mutating func removeObject(object: Element) {   // This allows us to remove an object by value.
         if let index = self.firstIndex(of: object) {
             self.remove(at: index)
         }
     }
 }
 
+// These tests apply to the above protocol-based extension.
 var testArray = [1,2,3,4,5,6,7,8,9,0]
 testArray.removeObject(object: 6)
-let newArray = testArray
+let newArray = testArray    // Contains [1,2,3,4,5,7,8,9,0]
 
 var testArray2 = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
 testArray2.removeObject(object: "6")
-let newArray2 = testArray2
+let newArray2 = testArray2  // Contains ["1", "2", "3", "4", "5", "7", "8", "9", "0"]
+
+var testArray3 = [["1", "2", "3"], ["4", "5", "6"], ["7", "8", "9"]]
+testArray3.removeObject(object: ["4", "5", "6"])
+let newArray3 = testArray3  // Contains [["1", "2", "3"], ["7", "8", "9"]]
+
+var testArray4 = [CLLocationCoordinate2D(latitude: 36, longitude: -77), CLLocationCoordinate2D(latitude: 26, longitude: -80), CLLocationCoordinate2D(latitude: -26, longitude: 33)]
+// This will not work. CLLocationCoordinate2D is not Equatable
+//testArray4.removeObject(object: CLLocationCoordinate2D(latitude: 26, longitude: -80))
 
 extension Array where Element == CLLocationCoordinate2D {
     /* ################################################################## */

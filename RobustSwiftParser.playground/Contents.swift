@@ -209,11 +209,11 @@ public func loadJSONIntoDictionaries() {
     jsonInterpretations.append(convertJSONToDictionary("{\"containerElement\": [{\"arrayElement\": [{\"attributes\": [{\"row\": \"0\"}, {\"value\": \"Element Value 01\"}]}]}, {\"arrayElement\": [{\"attributes\": [{\"row\": \"1\"}, {\"value\": \"Element Value 02\"}]}]}, {\"arrayElement\": [{\"attributes\": [{\"row\": \"2\"}, {\"value\": \"Element Value 03\"}]}]}, {\"arrayElement\": [{\"attributes\": [{\"row\": \"3\"}, {\"value\": \"Element Value 04\"}]}]}, {\"arrayElement\": [{\"attributes\": [{\"row\": \"4\"}, {\"value\": \"Element Value 05\"}]}]}]}"))
 }
 
+loadJSONIntoDictionaries()
+
 let whatWeWantToSee: [String] = ["Element Value 01", "Element Value 02", "Element Value 03", "Element Value 04", "Element Value 05"]
 
 print("What We Want the results to be:\n" + String(describing: whatWeWantToSee))
-
-loadJSONIntoDictionaries()
 
 func robustRecursiveDescentParser(_ inDictionaryToBeParsed: [String: Any],
                                   notTheseKeys inNotTheseKeys: [String] = [],
@@ -221,7 +221,11 @@ func robustRecursiveDescentParser(_ inDictionaryToBeParsed: [String: Any],
     return inDictionaryToBeParsed.reduce([]) { (current, next) -> [String] in
         var ret = current
 
-        if let asString = next.value as? String {
+        if let asInt = (next.value as? Int ?? Int(next.value as? String ?? "ERROR")) {
+            if (inOnlyTheseKeys.isEmpty || inOnlyTheseKeys.contains(next.key)) && (inNotTheseKeys.isEmpty || !inNotTheseKeys.contains(next.key)) {
+                ret += [String(asInt)]
+            }
+        } else if let asString = next.value as? String {
             if (inOnlyTheseKeys.isEmpty || inOnlyTheseKeys.contains(next.key)) && (inNotTheseKeys.isEmpty || !inNotTheseKeys.contains(next.key)) {
                 ret += [asString]
             }
@@ -258,5 +262,11 @@ jsonInterpretations.forEach {
     if result != whatWeWantToSee {
         print("ERROR! - Result: \(result)\n\tInput: \($0)")
     }
+    print(result)
+}
+
+print("Getting the Integer Values:")
+jsonInterpretations.forEach {
+    let result = robustRecursiveDescentParser($0, onlyTheseKeys: ["index", "row"])
     print(result)
 }

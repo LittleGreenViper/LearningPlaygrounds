@@ -2,6 +2,7 @@ import Foundation
 
 let aStringArray = ["Some String","AnotherString"]  // Direct type assignment
 let myFirstArray = aStringArray     // Implicit type assignment, where "aStringArray" is already a String Array.
+let myDirectArray = [String]()      // Explicit empty Array definition, using brackets and an initializer. This is a common way to instantiate an Array.
 let mySecondArray:[String] = []     // Explicit basic type definition, using brackets. This is the most common form.
 let myThirdArray:Array<String> = [] // This is the first (explicitly defined) generic form.
 let myFourthArray = Array<String>() // This is the second (type-assigned) generic form.
